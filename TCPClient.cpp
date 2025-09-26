@@ -30,9 +30,9 @@ bool TCPClient::setup(const std::string& addr, int prt) {
     server.sin_family = AF_INET;
     server.sin_port = htons(prt);
 
-    // Пробуем распарсить как IP
+    // РџСЂРѕР±СѓРµРј СЂР°СЃРїР°СЂСЃРёС‚СЊ РєР°Рє IP
     if (inet_pton(AF_INET, addr.c_str(), &server.sin_addr) <= 0) {
-        // Если не IP — пробуем DNS
+        // Р•СЃР»Рё РЅРµ IP вЂ” РїСЂРѕР±СѓРµРј DNS
         struct addrinfo hints {}, * result = nullptr;
         hints.ai_family = AF_INET;
         hints.ai_socktype = SOCK_STREAM;
