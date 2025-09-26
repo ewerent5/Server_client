@@ -23,7 +23,7 @@ int main() {
     }
 
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;  // слушаем все интерфейсы
+    serverAddr.sin_addr.s_addr = INADDR_ANY;  // СЃР»СѓС€Р°РµРј РІСЃРµ РёРЅС‚РµСЂС„РµР№СЃС‹
     serverAddr.sin_port = htons(11999);
 
     if (bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
@@ -42,7 +42,7 @@ int main() {
 
     std::cout << "Server listening on port 11999..." << std::endl;
 
-    // список клиентов
+    // СЃРїРёСЃРѕРє РєР»РёРµРЅС‚РѕРІ
     fd_set masterSet, readSet;
     FD_ZERO(&masterSet);
     FD_SET(serverSocket, &masterSet);
@@ -50,7 +50,7 @@ int main() {
     SOCKET maxSocket = serverSocket;
 
     while (true) {
-        readSet = masterSet; // копируем, так как select изменяет set
+        readSet = masterSet; // РєРѕРїРёСЂСѓРµРј, С‚Р°Рє РєР°Рє select РёР·РјРµРЅСЏРµС‚ set
         int socketCount = select(0, &readSet, nullptr, nullptr, nullptr);
 
         if (socketCount == SOCKET_ERROR) {
@@ -58,11 +58,11 @@ int main() {
             break;
         }
 
-        // проверяем все сокеты
+        // РїСЂРѕРІРµСЂСЏРµРј РІСЃРµ СЃРѕРєРµС‚С‹
         for (SOCKET s = 0; s <= maxSocket; s++) {
             if (FD_ISSET(s, &readSet)) {
                 if (s == serverSocket) {
-                    // новое подключение
+                    // РЅРѕРІРѕРµ РїРѕРґРєР»СЋС‡РµРЅРёРµ
                     sockaddr_in clientAddr{};
                     int clientSize = sizeof(clientAddr);
                     SOCKET clientSocket = accept(serverSocket, (sockaddr*)&clientAddr, &clientSize);
@@ -76,7 +76,7 @@ int main() {
                     }
                 }
                 else {
-                    // получаем данные от клиента
+                    // РїРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РѕС‚ РєР»РёРµРЅС‚Р°
                     char buffer[4096];
                     ZeroMemory(buffer, sizeof(buffer));
                     int bytesReceived = recv(s, buffer, sizeof(buffer), 0);
@@ -85,7 +85,7 @@ int main() {
                         std::string msg(buffer, bytesReceived);
                         std::cout << "Client " << s << " says: " << msg << std::endl;
 
-                        // рассылаем всем клиентам
+                        // СЂР°СЃСЃС‹Р»Р°РµРј РІСЃРµРј РєР»РёРµРЅС‚Р°Рј
                         for (SOCKET outSock = 0; outSock <= maxSocket; outSock++) {
                             if (FD_ISSET(outSock, &masterSet)) {
                                 if (outSock != serverSocket && outSock != s) {
@@ -95,7 +95,7 @@ int main() {
                         }
                     }
                     else {
-                        // клиент отключился
+                        // РєР»РёРµРЅС‚ РѕС‚РєР»СЋС‡РёР»СЃСЏ
                         std::cout << "Client " << s << " disconnected." << std::endl;
                         closesocket(s);
                         FD_CLR(s, &masterSet);
@@ -105,7 +105,7 @@ int main() {
         }
     }
 
-    // очищаем всё
+    // РѕС‡РёС‰Р°РµРј РІСЃС‘
     closesocket(serverSocket);
     WSACleanup();
     return 0;
